@@ -206,7 +206,7 @@ app.delete('/api/weather/:id', async (req, res) => {
 initDB()
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`🚀  Mini API Hub running → http://localhost:${PORT}`);
+      console.log(`🚀  Mini API Hub running → https://mini-api-hub-v1.vercel.app`);
     });
   })
   .catch((err) => {
