@@ -1,0 +1,19 @@
+{
+  "name": "mini-api-hub",
+  "version": "1.0.0",
+  "description": "Mini API Hub – fetches weather data, stores in PostgreSQL, serves via custom endpoints",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["api", "node", "postgresql", "weather"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "pg": "^8.13.0"
+  }
+}
