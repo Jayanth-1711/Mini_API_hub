@@ -1,24 +1,25 @@
-// ─────────────────────────────────────────────────────────
-// db.js  –  PostgreSQL connection pool (works with Supabase)
-// ─────────────────────────────────────────────────────────
-// WHY a pool?  Opening a fresh DB connection for every request is slow.
-// A pool keeps a handful of connections alive and reuses them.
-// Think of it like a carpool lane — shared rides, less traffic.
-//
-// WHY does Supabase "just work" with the pg library?
-// Because Supabase IS PostgreSQL. It exposes a standard Postgres
-// connection string. Any tool that speaks the Postgres wire protocol
-// connects seamlessly — that's the power of building on standards.
-// ─────────────────────────────────────────────────────────
+'use strict';
 
-const { Pool } = require('pg');
 require('dotenv').config();
+const { Pool } = require('pg');
 
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is not set. Add it to .env (local) or Vercel env vars.');
+}
+
+// Use the Supabase Transaction pooler URL (port 6543) in production.
+// Keep the pool small: each serverless instance opens its own connections.
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  // Supabase (and Render) require SSL for remote connections.
-  // Locally you'd set this to false, but Supabase always needs it.
   ssl: { rejectUnauthorized: false },
+  max: 3,
+  idleTimeoutMillis: 10000,
+  connectionTimeoutMillis: 8000,
+});
+
+// Prevents an idle-client error from crashing the process.
+pool.on('error', (err) => {
+  console.error('Unexpected PostgreSQL pool error:', err.message);
 });
 
 module.exports = pool;
